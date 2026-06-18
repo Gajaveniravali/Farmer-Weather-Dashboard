@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <title>{{ text.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+
+<body data-lang="{{ lang }}">
+<div class="card">
+
+    <!-- 🌐 LANGUAGE SWITCH -->
+    <div>
+        <a href="/?lang=en">English</a> |
+        <a href="/?lang=te">తెలుగు</a> |
+        <a href="/?lang=hi">हिन्दी</a>
+    </div>
+
+    <h1>🌾 {{ text.title }}</h1>
+    <h2>{{ text.welcome }}</h2>
+
+    <!-- IMPORTANT FIX -->
+    <form method="POST" action="/?lang={{ lang }}">
+
+        <div class="input-row">
+            <input type="text"
+                   id="city"
+                   name="city"
+                   placeholder="{{ text.city }}"
+                   value="{{ city_input or '' }}"
+                   required>
+        </div>
+
+        <div class="input-row field-row">
+            <input type="text"
+                   id="crop"
+                   name="crop"
+                   value="{{ crop_input or '' }}"
+                   placeholder="{{ text.crop_placeholder }}">
+        </div>
+
+        <div class="input-row field-row">
+            <input type="text"
+                   id="session"
+                   name="session"
+                   value="{{ session_input or '' }}"
+                   placeholder="{{ text.session_placeholder }}">
+        </div>
+
+        <div class="input-row field-row">
+            <button type="button" id="voice-all-btn" class="voice-all-btn" data-listen-prompt="{{ text.listening_prompt }}" data-confirm-text="{{ text.confirm_capture }}">
+                🎤 {{ text.speak_button }}
+            </button>
+            <button type="button" id="read-all-btn" class="read-all-btn" data-summary-template="{{ text.read_summary_template }}">{{ text.read_all_button }}</button>
+            <!-- TTS voice selection removed per user request -->
+        </div>
+
+        <div id="voice-status" class="voice-status"></div>
+
+        <button type="submit">
+            {{ text.button }}
+        </button>
+
+    </form>
+
+    {% if weather %}
+
+        <hr>
+
+        <h2>{{ weather.city }}</h2>
+
+        <p>🌡 Temperature: {{ weather.temp }} °C</p>
+        <p>💧 Humidity: {{ weather.humidity }} %</p>
+        <p>☁ Weather: {{ weather.condition }}</p>
+
+        <div class="suggestions">
+            <h3>{{ text.crop_suggestions }}</h3>
+            <ul>
+                {% for crop in weather.crops %}
+                    <li>{{ crop }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    {% endif %}
+
+    {% if crop_advice %}
+        <div class="advice-box">
+            <h3>{{ text.crop_advice_title }}</h3>
+            <p>{{ crop_advice }}</p>
+            {% if explanation_detail %}
+                <div class="explanation-box">
+                    <strong>{{ text.reason_label }}</strong>
+                    <p>{{ explanation_detail }}</p>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if session_suggestions %}
+        <div class="session-box">
+            <h3>{{ text.session_suggestions_title }}</h3>
+            <p>{{ text.session_suggestions_desc }}</p>
+            <ul>
+                {% for crop in session_suggestions %}
+                    <li>{{ crop }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {# overall crops removed per user request #}
+
+    {% if history %}
+        <div class="history-box">
+            <h3>{{ text.recent_searches }}</h3>
+            <ul>
+                {% for entry in history %}
+                    <li>
+                        <strong>{{ entry.city }}</strong>: {{ entry.temp }}°C, {{ entry.humidity }}% humidity, {{ entry.condition }}<br>
+                        {{ text.suggested_label }} {{ entry.crops | join(', ') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div id="speech-output" data-text="{{ speech_text or '' }}" style="display:none;"></div>
+    {% if speech_text %}
+        <div id="speech-text" class="speech-text">{{ speech_text }}</div>
+    {% else %}
+        <div id="speech-text" class="speech-text" style="display:none;"></div>
+    {% endif %}
+
+    <div id="summary-text" class="summary-text" style="margin-top:10px;color:#333;"></div>
+
+</div>
+
+</body>
+</html>
