@@ -41,10 +41,10 @@
 
         <div class="input-row field-row">
             <input type="text"
-                   id="session"
-                   name="session"
-                   value="{{ session_input or '' }}"
-                   placeholder="{{ text.session_placeholder }}">
+                   id="season"
+                   name="season"
+                   value="{{ season_input or '' }}"
+                   placeholder="{{ text.season_placeholder }}">
         </div>
 
         <div class="input-row field-row">
@@ -97,12 +97,12 @@
         </div>
     {% endif %}
 
-    {% if session_suggestions %}
-        <div class="session-box">
-            <h3>{{ text.session_suggestions_title }}</h3>
-            <p>{{ text.session_suggestions_desc }}</p>
+    {% if seasonn_suggestions %}
+        <div class="season-box">
+            <h3>{{ text.season_suggestions_title }}</h3>
+            <p>{{ text.season_suggestions_desc }}</p>
             <ul>
-                {% for crop in session_suggestions %}
+                {% for crop in season_suggestions %}
                     <li>{{ crop }}</li>
                 {% endfor %}
             </ul>

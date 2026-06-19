@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, season
 import requests
 
 # Configure paths for templates and static folders
@@ -38,20 +38,20 @@ for k, v in LANG_TEXT.items():
     extra = {
         'crop_suggestions': {'en': 'Crop Suggestions', 'te': 'పంట సూచనలు', 'hi': 'फसल सुझाव'}[k] if k in ['en','te','hi'] else 'Crop Suggestions',
         'crop_advice_title': {'en': 'Crop Advice', 'te': 'పంట సలహా', 'hi': 'फसल सलाह'}[k] if k in ['en','te','hi'] else 'Crop Advice',
-        'session_suggestions_title': {'en': 'Session Crop Suggestions', 'te': 'సెషన్ పంట సూచనలు', 'hi': 'सत्र फसल सुझाव'}[k] if k in ['en','te','hi'] else 'Session Crop Suggestions',
-        'session_suggestions_desc': {'en': 'Based on your recent searches, these crops are most recommended:', 'te': 'మీ సమీప శోధనల ఆధారంగా, ఈ పంటలు ఎక్కువగా సూచించబడతాయి:', 'hi': 'आपकी हालिया खोजों के आधार पर, ये फसलें सबसे अधिक अनुशंसित हैं:'}[k] if k in ['en','te','hi'] else '',
+        'season_suggestions_title': {'en': 'Season Crop Suggestions', 'te': 'సెషన్ పంట సూచనలు', 'hi': 'सत्र फसल सुझाव'}[k] if k in ['en','te','hi'] else 'Season Crop Suggestions',
+        'season_suggestions_desc': {'en': 'Based on your recent searches, these crops are most recommended:', 'te': 'మీ సమీప శోధనల ఆధారంగా, ఈ పంటలు ఎక్కువగా సూచించబడతాయి:', 'hi': 'आपकी हालिया खोजों के आधार पर, ये फसलें सबसे अधिक अनुशंसित हैं:'}[k] if k in ['en','te','hi'] else '',
         'recent_searches': {'en': 'Recent Searches', 'te': 'తాజా శోధనలు', 'hi': 'हाल की खोजें'}[k] if k in ['en','te','hi'] else 'Recent Searches',
         'suggested_label': {'en': 'Suggested:', 'te': 'సూచించబడింది:', 'hi': 'सुझाव:'}[k] if k in ['en','te','hi'] else 'Suggested:',
-        'speak_button': {'en': 'Speak location, crop, session', 'te': 'నగరం, పంట, సెషన్ ఒక్క మాటలో చెప్పు', 'hi': 'स्थान, फसल, सत्र बोलें'}[k] if k in ['en','te','hi'] else 'Speak location, crop, session',
+        'speak_button': {'en': 'Speak location, crop, season', 'te': 'నగరం, పంట, సెషన్ ఒక్క మాటలో చెప్పు', 'hi': 'स्थान, फसल, सत्र बोलें'}[k] if k in ['en','te','hi'] else 'Speak location, crop, season',
         'crop_placeholder': {'en': 'Enter crop name (e.g. Rice, Cotton, Corn, Pulses)', 'te': 'పంట పేరు రాయండి (ఉదా: అత్తి, పత్తి, మొక్కజొన్న)', 'hi': 'फसल का नाम दर्ज करें (जैसे: चावल, कपास, मकई, दालें)'}[k] if k in ['en','te','hi'] else 'Enter crop name',
-        'session_placeholder': {'en': 'Ask if this crop is good for this session', 'te': 'ఈ సీజన్‌కు ఈ పంట బాగుందా అని అడగండి', 'hi': 'पूछें कि क्या यह फसल इस सत्र के लिए ठीक है'}[k] if k in ['en','te','hi'] else 'Ask if this crop is good for this session',
-        'listening_prompt': {'en': 'Listening for location, crop, and session in one sentence.', 'te': 'ఒకే వాక్యంతో నగరం, పంట, సెషన్ చెప్తారా?', 'hi': 'एक वाक्य में स्थान, फसल और सत्र कहें।'}[k] if k in ['en','te','hi'] else 'Listening...',
+        'season_placeholder': {'en': 'Ask if this crop is good for this season', 'te': 'ఈ సీజన్‌కు ఈ పంట బాగుందా అని అడగండి', 'hi': 'पूछें कि क्या यह फसल इस सत्र के लिए ठीक है'}[k] if k in ['en','te','hi'] else 'Ask if this crop is good for this season',
+        'listening_prompt': {'en': 'Listening for location, crop, and season in one sentence.', 'te': 'ఒకే వాక్యంతో నగరం, పంట, సెషన్ చెప్తారా?', 'hi': 'एक वाक्य में स्थान, फसल और सत्र कहें।'}[k] if k in ['en','te','hi'] else 'Listening...',
         'confirm_capture': {'en': 'Captured. Location: {city}, Crop: {crop}. Submitting now.', 'te': 'సరే పట్టుకున్నాం — నగరం: {city}, పంట: {crop}. పంపిస్తున్నాం.', 'hi': 'कैप्चर किया गया। स्थान: {city}, फसल: {crop}. अब सबमिट कर रहे हैं।'}[k] if k in ['en','te','hi'] else 'Captured.',
         # Reason/explanation fragments
         'reason_temp': {'en': 'Temperature: {temp}°C.', 'te': 'తాపన: {temp}°C.', 'hi': 'तापमान: {temp}°C.'}[k] if k in ['en','te','hi'] else 'Temperature: {temp}°C.',
         'reason_humidity': {'en': 'Humidity: {humidity}%.', 'te': 'తేమ: {humidity}%.', 'hi': 'नमी: {humidity}%.'}[k] if k in ['en','te','hi'] else 'Humidity: {humidity}%.',
         'reason_condition': {'en': 'Weather: {condition}.', 'te': 'మౌసం: {condition}.', 'hi': 'मौसम: {condition}.'}[k] if k in ['en','te','hi'] else 'Weather: {condition}.',
-        'reason_session_support': {'en': 'Session history also supports this crop.', 'te': 'మునుపటి సెషన్లు కూడా ఈ పంటకు సరిపోతున్నాయి.', 'hi': 'सत्र इतिहास भी इस फसल का समर्थन करता है.'}[k] if k in ['en','te','hi'] else 'Session history supports this crop.',
+        'reason_season_support': {'en': 'Season history also supports this crop.', 'te': 'మునుపటి సెషన్లు కూడా ఈ పంటకు సరిపోతున్నాయి.', 'hi': 'सत्र इतिहास भी इस फसल का समर्थन करता है.'}[k] if k in ['en','te','hi'] else 'Season history supports this crop.',
         'reason_not_supported': {'en': 'Current conditions do not strongly support {crop}.', 'te': 'ఇప్పటి పరిస్థితులు {crop}కి చాలు మద్దతు ఇవ్వవు.', 'hi': 'वर्तमान परिस्थितियाँ {crop} का मजबूत समर्थन नहीं करतीं.'}[k] if k in ['en','te','hi'] else 'Current conditions do not strongly support {crop}.',
         'reason_alternatives': {'en': 'Consider alternatives: {alternatives}.', 'te': 'ఇంటి చుట్టూ ఈ పంటలు చూడు: {alternatives}.', 'hi': 'विकल्पों पर विचार करें: {alternatives}.'}[k] if k in ['en','te','hi'] else 'Consider alternatives: {alternatives}.',
         'reason_no_weather': {'en': 'No weather data available to evaluate the crop.', 'te': 'వాతావరణ డేటా లభించలేదు; అంచనా వేయలేము.', 'hi': 'फसल का मूल्यांकन करने के लिए मौसम डेटा उपलब्ध नहीं है.'}[k] if k in ['en','te','hi'] else 'No weather data available.'
@@ -60,17 +60,17 @@ for k, v in LANG_TEXT.items():
         ,
         'read_all_button': {'en': 'Read all inputs', 'te': 'అందరినీ చదవండి', 'hi': 'सभी इनपुट पढ़ें'}[k] if k in ['en','te','hi'] else 'Read all inputs',
         'read_summary_template': {
-            'en': 'Summary — City: {city}. Crop: {crop}. Session: {session}.',
-            'te': 'సారాంశం — నగరం: {city}. పంట: {crop}. సెషన్: {session}.',
-            'hi': 'सारांश — शहर: {city}. फसल: {crop}. सत्र: {session}.'
-        }[k] if k in ['en','te','hi'] else 'Summary — City: {city}. Crop: {crop}. Session: {session}.'
+            'en': 'Summary — City: {city}. Crop: {crop}. Season: {season}.',
+            'te': 'సారాంశం — నగరం: {city}. పంట: {crop}. సెషన్: {season}.',
+            'hi': 'सारांश — शहर: {city}. फसल: {crop}. सत्र: {season}.'
+        }[k] if k in ['en','te','hi'] else 'Summary — City: {city}. Crop: {crop}. Season: {season}.'
     }
     v.update(extra)
 
 
 ADVICE_MESSAGES = {
     "en": {
-        "yes_strong": "Yes — based on the current weather and session history, {crop} is a good choice for this session.",
+        "yes_strong": "Yes — based on the current weather and season history, {crop} is a good choice for this season.",
         "yes_weather": "Yes — current weather supports {crop}.",
         "no_reason": "No — {crop} may not be suitable currently. Consider: {alternatives}.",
         "no_reason_simple": "No — {crop} may not be suitable currently due to weather conditions. Consider: {alternatives}."
@@ -97,12 +97,12 @@ def home():
     text = LANG_TEXT.get(lang, LANG_TEXT["en"])
 
     weather = None
-    session_suggestions = []
-    history = session.get("history", [])
+    season_suggestions = []
+    history = season.get("history", [])
     city_input = None
     crop_advice = None
     crop_input = None
-    session_input = None
+    season_input = None
     speech_text = None
     explanation_detail = None
     # overall_crops removed per user preference (not shown anymore)
@@ -142,9 +142,9 @@ def home():
         city = request.form.get("city")
         city_input = city
         crop_input = request.form.get("crop", "").strip()
-        session_input = request.form.get("session", "").strip()
+        season_input = request.form.get("season", "").strip()
         normalized_crop = normalize_crop(crop_input)
-        session_use = bool(session_input and any(keyword in session_input.lower() for keyword in ["session", "yes", "use", "based", "recommend"]))
+        season_use = bool(season_input and any(keyword in season_input.lower() for keyword in ["season", "yes", "use", "based", "recommend"]))
 
         if city:
             url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
@@ -169,11 +169,11 @@ def home():
                     "condition": weather["condition"],
                     "crops": weather["crops"]
                 })
-                session["history"] = history[:5]
+                season["history"] = history[:5]
 
         if history:
             all_crops = [crop for entry in history for crop in entry["crops"]]
-            session_suggestions = sorted(set(all_crops), key=lambda crop: all_crops.count(crop), reverse=True)[:4]
+            season_suggestions = sorted(set(all_crops), key=lambda crop: all_crops.count(crop), reverse=True)[:4]
 
         if normalized_crop:
             msgs = ADVICE_MESSAGES.get(lang, ADVICE_MESSAGES['en'])
@@ -181,7 +181,7 @@ def home():
 
             if weather and normalized_crop in weather["crops"]:
                 # supported by weather
-                if session_use and normalized_crop in session_suggestions:
+                if season_use and normalized_crop in season_suggestions:
                     crop_advice = msgs['yes_strong'].format(crop=normalized_crop)
                 else:
                     crop_advice = msgs['yes_weather'].format(crop=normalized_crop)
@@ -200,8 +200,8 @@ def home():
                 parts.append(text['reason_condition'].format(condition=weather['condition']))
 
                 if weather and normalized_crop in weather.get('crops', []):
-                    if session_use and normalized_crop in session_suggestions:
-                        parts.append(text['reason_session_support'])
+                    if season_use and normalized_crop in season_suggestions:
+                        parts.append(text['reason_season_support'])
                 else:
                     parts.insert(0, text['reason_not_supported'].format(crop=normalized_crop))
                     if alternatives:
@@ -220,7 +220,7 @@ def home():
     else:
         if history:
             all_crops = [crop for entry in history for crop in entry["crops"]]
-            session_suggestions = sorted(set(all_crops), key=lambda crop: all_crops.count(crop), reverse=True)[:4]
+            season_suggestions = sorted(set(all_crops), key=lambda crop: all_crops.count(crop), reverse=True)[:4]
 
     return render_template(
         "index.html",
@@ -228,11 +228,11 @@ def home():
         text=text,
         lang=lang,
         history=history,
-        session_suggestions=session_suggestions,
+        season_suggestions=season_suggestions,
         crop_advice=crop_advice,
         city_input=city_input,
         crop_input=crop_input,
-        session_input=session_input,
+        season_input=season_input,
         speech_text=speech_text,
     )
 

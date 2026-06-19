@@ -1,6 +1,6 @@
 const cityInput = document.getElementById('city');
 const cropInput = document.getElementById('crop');
-const sessionInput = document.getElementById('session');
+const seasonInput = document.getElementById('season');
 const voiceAllBtn = document.getElementById('voice-all-btn');
 const voiceStatus = document.getElementById('voice-status');
 const speechOutput = document.getElementById('speech-output');
@@ -27,9 +27,9 @@ function updateStatus(message) {
 function parseCombinedTranscript(transcript) {
     if (!transcript) return {};
     const original = transcript.trim();
-    const normalized = original.replace(/\bseason\b/gi, 'session').replace(/\blocation\b/gi, 'city');
-    const fields = { city: null, crop: null, session: null };
-    const regex = /\b(city|crop|session)\b\s*[:\-]?\s*/gi;
+    const normalized = original.replace(/\bseason\b/gi, 'season').replace(/\blocation\b/gi, 'city');
+    const fields = { city: null, crop: null, season: null };
+    const regex = /\b(city|crop|season)\b\s*[:\-]?\s*/gi;
     let match;
     let lastKey = null;
     let lastIndex = 0;
@@ -47,7 +47,7 @@ function parseCombinedTranscript(transcript) {
     }
 
     // If city keyword is missing but there is text before the first keyword, use that as city.
-    const firstKeywordMatch = /\b(city|crop|session)\b/i.exec(normalized);
+    const firstKeywordMatch = /\b(city|crop|season)\b/i.exec(normalized);
     if (!fields.city && firstKeywordMatch && firstKeywordMatch.index > 0) {
         fields.city = normalized.substring(0, firstKeywordMatch.index).trim().replace(/^[,:\-\s]+|[,:\-\s]+$/g, '');
     }
@@ -55,7 +55,7 @@ function parseCombinedTranscript(transcript) {
     return {
         city: fields.city || null,
         crop: fields.crop || null,
-        session: fields.session || null
+        season: fields.season || null
     };
 }
 
@@ -73,7 +73,7 @@ function startSingleRecognition(prompt) {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    updateStatus(prompt || 'Listening for location, crop, and session in one sentence.');
+    updateStatus(prompt || 'Listening for location, crop, and season in one sentence.');
     recognition.start();
 
     recognition.addEventListener('result', (event) => {
@@ -83,7 +83,7 @@ function startSingleRecognition(prompt) {
         const parsed = parseCombinedTranscript(transcript);
         if (parsed.city) cityInput.value = parsed.city;
         if (parsed.crop) cropInput.value = parsed.crop;
-        if (parsed.session) sessionInput.value = parsed.session;
+        if (parsed.season) seasonInput.value = parsed.season;
         // update visible summary immediately so user can read inputs
         try { readAllInputs(); } catch (e) {}
 
@@ -131,7 +131,7 @@ function startSingleRecognition(prompt) {
 // Attach the single-utterance handler to the single mic button
 if (voiceAllBtn) {
     voiceAllBtn.addEventListener('click', () => {
-        const prompt = (voiceAllBtn.dataset && voiceAllBtn.dataset.listenPrompt) || 'Listening for location, crop, and session in one sentence.';
+        const prompt = (voiceAllBtn.dataset && voiceAllBtn.dataset.listenPrompt) || 'Listening for location, crop, and season in one sentence.';
         startSingleRecognition(prompt);
     });
 }
@@ -140,18 +140,18 @@ if (voiceAllBtn) {
 const readAllBtn = document.getElementById('read-all-btn');
 function readAllInputs() {
     if (!readAllBtn) return;
-    const template = readAllBtn.dataset.summaryTemplate || 'Summary — City: {city}. Crop: {crop}. Session: {session}.';
+    const template = readAllBtn.dataset.summaryTemplate || 'Summary — City: {city}. Crop: {crop}. Season: {season}.';
     const city = cityInput ? (cityInput.value || 'unknown') : 'unknown';
     const crop = cropInput ? (cropInput.value || 'unknown') : 'unknown';
-    const sessionVal = sessionInput ? (sessionInput.value || 'unknown') : 'unknown';
-    const summary = template.replace('{city}', city).replace('{crop}', crop).replace('{session}', sessionVal);
+    const seasonVal = seasonInput ? (seasonInput.value || 'unknown') : 'unknown';
+    const summary = template.replace('{city}', city).replace('{crop}', crop).replace('{season}', seasonVal);
     // display summary text
     const summaryEl = document.getElementById('summary-text');
     if (summaryEl) { summaryEl.textContent = summary; summaryEl.style.display = ''; }
     updateStatus(summary);
 
     // speak the summary using TTS (best-effort for page language)
-    try { speakTTS(`city ${city}, crop ${crop}, session ${sessionVal}`); } catch (e) { console.warn('TTS failed', e); }
+    try { speakTTS(`city ${city}, crop ${crop}, season ${seasonVal}`); } catch (e) { console.warn('TTS failed', e); }
 }
 
 if (readAllBtn) {
@@ -222,11 +222,11 @@ if (speechOutput && speechOutput.dataset.text) {
         // also show combined summary (inputs + advice) so everything is visible
         const summaryEl = document.getElementById('summary-text');
         if (summaryEl) {
-            const template = (readAllBtn && readAllBtn.dataset && readAllBtn.dataset.summaryTemplate) || 'Summary — City: {city}. Crop: {crop}. Session: {session}.';
+            const template = (readAllBtn && readAllBtn.dataset && readAllBtn.dataset.summaryTemplate) || 'Summary — City: {city}. Crop: {crop}. Season: {season}.';
             const city = cityInput ? (cityInput.value || 'unknown') : 'unknown';
             const crop = cropInput ? (cropInput.value || 'unknown') : 'unknown';
-            const sessionVal = sessionInput ? (sessionInput.value || 'unknown') : 'unknown';
-            const summary = template.replace('{city}', city).replace('{crop}', crop).replace('{session}', sessionVal);
+            const seasonVal = seasonInput ? (seasonInput.value || 'unknown') : 'unknown';
+            const summary = template.replace('{city}', city).replace('{crop}', crop).replace('{season}', seasonVal);
             summaryEl.textContent = summary + ' ' + text;
             summaryEl.style.display = '';
         }

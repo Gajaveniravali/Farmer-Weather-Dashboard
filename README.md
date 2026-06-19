@@ -22,9 +22,9 @@ Farmer-Weather-Dashboard/
 
 ## Features
 - 🌤️ Real-time weather data via OpenWeather API
-- 🎤 Voice input for location, crop, and session
+- 🎤 Voice input for location, crop, and season
 - 🌐 Multi-language UI (English, Telugu, Hindi)
-- 💾 Session history with crop recommendations
+- 💾 Season history with crop recommendations
 - 🌾 Intelligent crop suggestions based on weather conditions
 
 ## Prerequisites
@@ -58,7 +58,7 @@ The app will start on `http://127.0.0.1:5000`.
 ## Usage
 1. Select your language (English, తెలుగు, हिन्दी)
 2. Enter a city name
-3. (Optional) Enter a crop name and/or session preference
+3. (Optional) Enter a crop name and/or season preference
 4. Use 🎤 button for voice input or click "Get Weather"
 5. View crop recommendations based on current weather
 
