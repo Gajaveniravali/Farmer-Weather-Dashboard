@@ -1,7 +1,11 @@
+import os
 from flask import Flask, render_template, request, session
 import requests
 
-app = Flask(__name__)
+# Configure paths for templates and static folders
+template_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'templates')
+static_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'static')
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.secret_key = "change-this-to-a-secure-random-key"
 
 API_KEY = "081a493e95fe0f17512e8feedb5044d7"
@@ -230,7 +234,6 @@ def home():
         crop_input=crop_input,
         session_input=session_input,
         speech_text=speech_text,
-        
     )
 
 
